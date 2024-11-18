@@ -18,6 +18,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
+Route::get('/admin/dashboard', function () {
+    return view('backend.admin_dashboard');
+    
+});
+
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -29,3 +39,25 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+
+Route::middleware('guest:admin')->prefix('admin')->group( function () {
+
+    Route::get('login', [App\Http\Controllers\Auth\Admin\LoginController::class, 'login'])->name('admin.login');
+    Route::post('login', [App\Http\Controllers\Auth\Admin\LoginController::class, 'check_user']);
+
+   
+
+});
+
+Route::middleware('auth:admin')->prefix('admin')->group( function () {
+
+    Route::post('logout', [App\Http\Controllers\Auth\Admin\LoginController::class, 'logout'])->name('admin.logout');
+
+    Route::view('/dashboard','admin.dashboard');
+
+});
+
+
+
